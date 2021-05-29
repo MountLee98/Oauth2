@@ -20,13 +20,16 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableOAuth2Sso
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
+	@Autowired
+	public SecurityConfigBcrypt securityConfigBcrypt;
+	
 	@Qualifier("customUserDetailsServiceImpl")
     @Autowired
     public UserDetailsService userDetailsService;
 	
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-    	auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+    	auth.userDetailsService(userDetailsService).passwordEncoder(securityConfigBcrypt.bCryptPasswordEncoder());
     }
 	
 	@Override
@@ -51,8 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .logoutSuccessUrl("/login");
 	}
 	
-	@Bean
-    public  BCryptPasswordEncoder bCryptPasswordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+//	@Bean
+//    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
 }
