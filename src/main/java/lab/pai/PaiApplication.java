@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //@RestController
 public class PaiApplication {
 
-//	@GetMapping("/oa2_user")
+//	@GetMapping("/oauth2/authorization/github")
 //    public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
 //        Map<String, Object> userData = new HashMap<>();
 //

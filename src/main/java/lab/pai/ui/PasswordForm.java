@@ -46,12 +46,17 @@ public class PasswordForm extends FormLayout{
     private Component createButtonLayout(){
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
-        modify.addClickListener(buttonClickEvent -> fireEvent(new ModifyEvent(this, binder.getBean())));
+        //modify.addClickListener(buttonClickEvent -> fireEvent(new ModifyEvent(this, binder.getBean())));
+        modify.addClickListener(click -> modifyPassword(password.getValue(), binder.getBean()));
         close.addClickListener(buttonClickEvent -> fireEvent(new PasswordForm.CloseEvent(this)));
         return new HorizontalLayout(modify, close);
     }
 
-    public static abstract class PasswordFormEvent extends ComponentEvent<PasswordForm> {
+    public void modifyPassword(String newPassword, User user) {
+    	user.setPassword(newPassword);
+	}
+
+	public static abstract class PasswordFormEvent extends ComponentEvent<PasswordForm> {
         /**
 		 * 
 		 */

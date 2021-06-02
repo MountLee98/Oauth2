@@ -17,11 +17,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
-@EnableOAuth2Sso
+//@EnableOAuth2Sso
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-	@Autowired
-	public SecurityConfigBcrypt securityConfigBcrypt;
+//	@Autowired
+//	public SecurityConfigBcrypt securityConfigBcrypt;
 	
 	@Qualifier("customUserDetailsServiceImpl")
     @Autowired
@@ -29,14 +29,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-    	auth.userDetailsService(userDetailsService).passwordEncoder(securityConfigBcrypt.bCryptPasswordEncoder());
+    	auth.userDetailsService(userDetailsService).passwordEncoder(/*securityConfigBcrypt.*/bCryptPasswordEncoder());
     }
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		//http.csrf().disable().authorizeRequests()
 		http.csrf().disable().headers().frameOptions().sameOrigin().and().authorizeRequests()
-        .antMatchers("/rest/delegation/adduserdelegtion").hasAnyRole("ROLE_USER")
+		.antMatchers("/login").permitAll()
+		.antMatchers("/rest/delegation/adduserdelegtion").hasAnyRole("ROLE_USER")
         .antMatchers("/rest/delegation/delete").hasAnyRole("ROLE_USER")
         .antMatchers("/rest/delegation/changedelegation").hasAnyRole("ROLE_USER")
         .antMatchers("/rest/delegation/getall").hasAnyRole("ROLE_USER")
@@ -47,15 +48,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .antMatchers("/rest/user/deleteuser").hasAnyRole("ROLE_USER")
         .antMatchers("/rest/user/getdelegation").hasAnyRole("ROLE_USER")
         .antMatchers("/rest/user/getallbyrolename").hasAnyRole("ROLE_USER")
-        .antMatchers("/swagger-ui.html/**").hasAnyRole("ROLE_USER")
+        .antMatchers("/swagger-ui.html/**").permitAll()//.hasAnyRole("ROLE_USER")
         .and().formLogin().loginPage("/login").loginProcessingUrl("/login")
         .and().oauth2Login().loginPage("/login")
-        .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-        .logoutSuccessUrl("/login");
+        .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login");
+        //.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+        //.logoutSuccessUrl("/login");
 	}
 	
-//	@Bean
-//    public BCryptPasswordEncoder bCryptPasswordEncoder(){
-//        return new BCryptPasswordEncoder();
-//    }
+	@Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 }
