@@ -14,7 +14,7 @@ import com.vaadin.flow.router.Route;
 import lab.pai.model.User;
 import lab.pai.service.UserService;
 
-@Route(value="main")
+@Route(value="main", layout = MainView.class)
 @PageTitle("Main Page")
 public class MainPage extends VerticalLayout{
 	

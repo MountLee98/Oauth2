@@ -1,5 +1,7 @@
 package lab.pai.ui;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -13,6 +15,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
 
 import lab.pai.model.User;
+import lab.pai.service.UserService;
 
 public class PasswordForm extends FormLayout{
 
@@ -20,6 +23,9 @@ public class PasswordForm extends FormLayout{
 	 * 
 	 */
 	private static final long serialVersionUID = 2927888073483650531L;
+	
+	@Autowired
+    UserService userService;
 
 	private PasswordField password = new PasswordField("New Password");
 
@@ -53,7 +59,7 @@ public class PasswordForm extends FormLayout{
     }
 
     public void modifyPassword(String newPassword, User user) {
-    	user.setPassword(newPassword);
+    	userService.changePassword(user.getUserId(), newPassword);
 	}
 
 	public static abstract class PasswordFormEvent extends ComponentEvent<PasswordForm> {

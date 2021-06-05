@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -22,6 +24,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 //	@Autowired
 //	public SecurityConfigBcrypt securityConfigBcrypt;
+	
+    @Autowired
+    OAuth2AuthorizedClientRepository authorizedClientRepository;
+
+    @Autowired
+    OAuth2AuthorizedClientService authorizedClientService;
 	
 	@Qualifier("customUserDetailsServiceImpl")
     @Autowired
@@ -37,18 +45,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		//http.csrf().disable().authorizeRequests()
 		http.csrf().disable().headers().frameOptions().sameOrigin().and().authorizeRequests()
 		.antMatchers("/login").permitAll()
-		.antMatchers("/rest/delegation/adduserdelegtion").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/delegation/delete").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/delegation/changedelegation").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/delegation/getall").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/delegation/getdate").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/user/registeruser").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/user/allusers").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/user/changepassword").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/user/deleteuser").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/user/getdelegation").hasAnyRole("ROLE_USER")
-        .antMatchers("/rest/user/getallbyrolename").hasAnyRole("ROLE_USER")
-        .antMatchers("/swagger-ui.html/**").permitAll()//.hasAnyRole("ROLE_USER")
+		.antMatchers("/register").permitAll()
+		.antMatchers("/rest/delegation/adduserdelegtion").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/delegation/delete").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/delegation/changedelegation").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/delegation/getall").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/delegation/getdate").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/user/registeruser").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/user/allusers").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/user/changepassword").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/user/deleteuser").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/user/getdelegation").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/rest/user/getallbyrolename").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/swagger-ui.html/**").hasAnyAuthority("ROLE_ADMIN")
+        .antMatchers("/admin/delegation").hasAnyAuthority("ROLE_ADMIN")
+        .antMatchers("/admin/users").hasAnyAuthority("ROLE_ADMIN")
+        .antMatchers("/main").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/delegation").hasAnyAuthority("ROLE_USER")
         .and().formLogin().loginPage("/login").loginProcessingUrl("/login")
         .and().oauth2Login().loginPage("/login")
         .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login");
