@@ -19,6 +19,7 @@ public interface UserService {
 	List<Delegation> getAllDelByUserOrderByDateStartDesc(long userId);
 	void makeAdmin(long userId);
 	void makeUser(long userId);
+	void changeUser(long userId, User user);
 	
     //User registerNewUserAccount(User user);
 

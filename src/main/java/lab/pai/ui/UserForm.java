@@ -12,6 +12,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.converter.StringToLongConverter;
 import com.vaadin.flow.shared.Registration;
 
 import lab.pai.model.User;
@@ -22,7 +23,7 @@ public class UserForm extends FormLayout{
 	 * 
 	 */
 	private static final long serialVersionUID = -4293064709482613662L;
-	private IntegerField userId = new IntegerField("ID");
+	private TextField userId = new TextField("ID");
     private PasswordField password = new PasswordField("New Password");
     private TextField name = new TextField("Name");
     private TextField lastName = new TextField("Last Name");
@@ -40,7 +41,7 @@ public class UserForm extends FormLayout{
     BeanValidationBinder<User> binder = new BeanValidationBinder<>(User.class);
 
     public UserForm(){
-        binder.forField(userId).bind("userId");
+        binder.forField(userId).withConverter( new StringToLongConverter("userId")).bind("userId");
         binder.forField(password).bind("password");
         binder.forField(name).bind("name");
         binder.forField(lastName).bind("lastName");
@@ -148,7 +149,7 @@ public class UserForm extends FormLayout{
 		private static final long serialVersionUID = 6159285818275072407L;
 
 		MakeAdminEvent(UserForm source, User user) {
-            super(source, user);
+            super(source, user);			
         }
     }
 

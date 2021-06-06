@@ -159,6 +159,13 @@ public class UserServiceImpl implements UserService{
 				}
 	    	}	
 	    }
+
+		@Override
+		public void changeUser(long userId, User user) {
+			if(userRepo.existsById(userId)){
+	            userRepo.save(user);
+	        }			
+		}
 	    
 //	    public UserDetails loadUserByUsername(String email) 
 //	    		  throws UsernameNotFoundException {

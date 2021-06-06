@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -43,9 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		//http.csrf().disable().authorizeRequests()
-		http.csrf().disable().headers().frameOptions().sameOrigin().and().authorizeRequests()
+		http.csrf().disable()
+		.requestCache().requestCache(new RequestCache())
+		.and().headers().frameOptions().sameOrigin().and().authorizeRequests()
+		//.requestCache().requestCache(new RequestCache())
 		.antMatchers("/login").permitAll()
 		.antMatchers("/register").permitAll()
+		.requestMatchers(SecurityUti::isFrameworkInternalRequest).permitAll()
 		.antMatchers("/rest/delegation/adduserdelegtion").hasAnyAuthority("ROLE_USER")
         .antMatchers("/rest/delegation/delete").hasAnyAuthority("ROLE_USER")
         .antMatchers("/rest/delegation/changedelegation").hasAnyAuthority("ROLE_USER")
@@ -62,11 +67,39 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         .antMatchers("/admin/users").hasAnyAuthority("ROLE_ADMIN")
         .antMatchers("/main").hasAnyAuthority("ROLE_USER")
         .antMatchers("/delegation").hasAnyAuthority("ROLE_USER")
+        .antMatchers("/VAADIN/**").permitAll()
         .and().formLogin().loginPage("/login").loginProcessingUrl("/login")
         .and().oauth2Login().loginPage("/login")
         .and().logout().logoutUrl("/logout").logoutSuccessUrl("/login");
         //.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
         //.logoutSuccessUrl("/login");
+	}
+	
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+	    web.ignoring().antMatchers(
+	            // Vaadin Flow static resources // 
+	            //"/VAADIN/static/**",
+
+	            // the standard favicon URI
+	            "/favicon.ico",
+
+	            // the robots exclusion standard
+	            "/robots.txt",
+
+	            // web application manifest // 
+	            "/manifest.webmanifest",
+	            "/sw.js",
+	            "/offline-page.html",
+
+	            // (development mode) static resources // 
+	            "/frontend/**",
+
+	            // (development mode) webjars // 
+	            "/webjars/**",
+
+	            // (production mode) static resources // 
+	            "/frontend-es5/**", "/frontend-es6/**");
 	}
 	
 	@Bean
